@@ -52,14 +52,18 @@ def parse_wikipedia_dump(xml_file):
             elif current_tag == "page":
                 print("found a page")
                 if ns_value is not None and ns_value in ns_set:
+                    # Process text/ clean the data
                     process_text(text)
-
-                    write_to_jsonl()
+                    # create comment thread hierarchy etc
+                    # TODO
+                    # write current dict as json to jsonl output file
+                    write_to_jsonl(cur_dict, path)
+                # Clean the current parser elements
                 title = ""
                 text = ""
                 ns_value = None
-                element.clear()  # Free memory by clearing the element
-                
+                # Free memory by clearing the element
+                element.clear()                  
 
 # Replace 'your_wiki_dump.xml' with the path to your Wikipedia XML dump file
 with bz2.BZ2File('../dataset/simplewiki-20240401-pages-meta-current.xml.bz2','rb') as f:
