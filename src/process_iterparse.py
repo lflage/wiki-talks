@@ -12,6 +12,7 @@ def process_text(text):
     print("Title:", title)
     print("Text:", text)
     print("-----------------------")
+    return text
 
 def write_to_jsonl(page_dict, path):
     if os.path.exists(path):
@@ -36,32 +37,31 @@ def parse_wikipedia_dump(xml_file):
         if event == "start":
             if current_tag == "ns":
                 try:
-                    ns_value = int(element.text)
+                    cur_dict["ns_value"] = int(element.text)
                 except TypeError:
-                    ns_value = None
+                    cur_dict["ns_value"] = None
 
             elif current_tag == "title":
-                title = ""
+                cur_dict["title"] = ""
             elif current_tag == "text":
                 text = ""
         elif event == "end":
             if current_tag == "title":
-                title = element.text
+                cur_dict["title"] += element.text
             elif current_tag == "text":
-                text = element.text
+                text += element.text
             elif current_tag == "page":
                 print("found a page")
                 if ns_value is not None and ns_value in ns_set:
                     # Process text/ clean the data
-                    process_text(text)
-                    # create comment thread hierarchy etc
+                    text = process_text(text)
+                    # create comment thread hierarchy and write to dict
                     # TODO
+                    cur_dict["threads"] = parse_threads(text)
                     # write current dict as json to jsonl output file
                     write_to_jsonl(cur_dict, path)
-                # Clean the current parser elements
-                title = ""
-                text = ""
-                ns_value = None
+                # Clean the current dict with current parser elements
+                cur_dict = {}
                 # Free memory by clearing the element
                 element.clear()                  
 
