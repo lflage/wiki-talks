@@ -1,12 +1,12 @@
 from lxml import etree
-import bz2
-import sys
+import bz2, sys, os, json
 
 ns_set = {1,3,5,7,9}
+out_json = "./wikitalks.jsonl"
 # TODO: add dict to save as json
 cur_dict = {}
 
-def process_text(title, text):
+def process_text(text):
     # Do something with the extracted data
     # TODO: process the text removing html, and unnecessary markdown
     print("Title:", title)
@@ -14,7 +14,12 @@ def process_text(title, text):
     print("-----------------------")
 
 def write_to_jsonl(page_dict, path):
-
+    if os.path.exists(path):
+        with open(path, 'a') as f_out:
+            json.dump(page_dict, path)
+    else:
+        with open(path, "w") as f_out:
+            json.dump(page_dict, path)
 
 
 def parse_wikipedia_dump(xml_file):
