@@ -1,5 +1,7 @@
 ./obsolete/*
 ./dataset/*
+./**.jsonl
 
 !./dataset/.gitkeep
+!./dataset/bz2/.gitkeep
 
