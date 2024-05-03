@@ -17,12 +17,15 @@ def write_to_jsonl(page_dict, path):
     if os.path.exists(path):
         with open(path, 'a') as f_out:
             json.dump(page_dict, f_out)
+            f_out.write('\n')
     else:
         with open(path, "w") as f_out:
             json.dump(page_dict, f_out)
+            f_out.write('\n')
+
 
 def parse_page(page_dict):
-    page = wtp.parse(page)
+    page = wtp.parse(page_dict["text"])
     threads = []
     for i, section in enumerate(page.sections):
         section_txt = ""
