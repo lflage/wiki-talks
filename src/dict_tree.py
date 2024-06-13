@@ -1,5 +1,4 @@
 import re
-from treelib import Node, Tree
 import pickle
 import pprint
 
@@ -16,10 +15,6 @@ def check_depth(text, base=1):
     else:
         return base
 
-class Reply(object):
-        def __init__(self, text): 
-            self.content = text
-
 test_2 = """Is Australia not an island, a continent, ''and'' a country? ~ [[User:RTG|<font color="Brown" size="2" face="Impact">R</font>]].[[User_Talk:RTG|<font color="brown" size="2" face="impact">T</font>]].[[Special:Contributions/RTG|<font color="brown" size="2" face="impact">G</font>]] 04:27, 28 October 2008 (UTC)
 :Yes it's an island, and yes it's a country. (Some consider it part of the content of Oceania, but the other two things are not debated.) I don't see what your point is, though. [[User:Giggy|Giggy]] ([[User talk:Giggy|talk]]) 04:33, 28 October 2008 (UTC)
 
@@ -35,50 +30,46 @@ I had a read of it and the first line said "Australia is a country" but as far a
 ::same level comment 20:36, 29 October 2008 (UTC)
 ::yet another same level comment 20:36, 29 October 2008 (UTC)
 """
-test_2 = re.sub("\n+", "\n", test_2)
-test_2 = test_2.strip()
 
-search = re.search(date_signature, test_2)
-
-thread_text = re.search(date_signature, test_2).string[:search.end()]
-replies_text = re.search(date_signature, test_2).string[search.end():]
-
-thread = {"message":thread_text,
-            "replies": []}
-            
-stack = [thread]
-depth = 0
-for ix, split in enumerate(replies_text.split("\n:")[1:],start=1):
-
-    # enumerate starts at 1
+def thread_tree(text):
     
-    split = split.strip()
-    depth = check_depth(split)
+    text = re.sub("\n+", "\n", text)
+    text = text.strip()
 
-    text = re.search(date_signature, split).string[:search.end()][depth-1:]
-    reply = {"text": text,
-            "replies":[]}
+    search = re.search(date_signature, text)
 
-    if depth  > len(stack):
-        stack[-1]["replies"].append(reply)
+    thread_text = re.search(date_signature, text).string[:search.end()]
+    replies_text = re.search(date_signature, text).string[search.end():]
 
-    elif depth == len(stack):
-        stack[-1]["replies"].append(reply)
+    thread = {"message":thread_text,
+                "replies": []}
+                
+    stack = [thread]
+    for ix, split in enumerate(replies_text.split("\n:")[1:],start=1):
 
-    elif depth < len(stack):
-        dif = len(stack) - depth
-        stack = stack[:-dif]
-        stack[-1]["replies"].append(reply)
+        # enumerate starts at 1
+        
+        split = split.strip()
+        depth = check_depth(split)
 
-    stack.append(reply)
-    #depth check
-    depth
+        text = re.search(date_signature, split).string[:search.end()][depth-1:]
+        reply = {"text": text,
+                "replies":[]}
 
-pprint.pprint(thread)
-# tree.save2file("parse_tree.txt",data_property='content')
-# with open("parse_tree.pkl", "wb") as f:
-#     pickle.dump(tree, f)
-# with open("parse_tree.pkl", "rb") as f:
-#     tree_load = pickle.load(f)
-# tree_load.save2file("parse_tree.txt",data_property='content')
-# 
+        if depth  > len(stack):
+            stack[-1]["replies"].append(reply)
+
+        elif depth == len(stack):
+            stack[-1]["replies"].append(reply)
+
+        elif depth < len(stack):
+            dif = len(stack) - depth
+            stack = stack[:-dif]
+            stack[-1]["replies"].append(reply)
+
+        stack.append(reply)
+    return thread
+
+if __name__=="__main__":
+    print("main")
+    pprint.pprint(thread_tree(test_2))
