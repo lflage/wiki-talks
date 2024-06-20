@@ -1,11 +1,13 @@
 from lxml import etree
-import bz2, sys, os, json, re
+import bz2, sys, os, json, re,traceback
 import wikitextparser as wtp
 from wikitextparser import remove_markup
+import dict_tree
+import pprint
 
 # Future CLI settings
 ns_set = {1, 3, 5, 7, 9, 11, 13, 15, 101, 119,711, 829}
-out_json = "../dataset/wikitalks.jsonl"
+out_json = "../dataset/wikitalks_1.jsonl"
 bz2_file = "../dataset/bz2/simplewiki-20240420-pages-meta-current.xml.bz2"
 
 def process_text(text):
@@ -25,8 +27,18 @@ def write_to_jsonl(page_dict, path):
 
 
 def parse_page(page_dict):
-    page = wtp.parse(page_dict["text"])
+    # if there is no text on the page, return empty list
+    if page_dict["text"] == None:
+        return []
+    # Parse page with wikitextparser to return sections
+    try:
+        page = wtp.parse(page_dict["text"])
+    except TypeError:
+        print(traceback.format_exc())
+        pprint.pprint(page_dict)
+        sys.exit()
     threads = []
+
     for i, section in enumerate(page.sections):
         section_txt = ""
         sec_title = section.title
@@ -37,16 +49,19 @@ def parse_page(page_dict):
         section_txt += remove_markup(sec_title)
         section_txt += "\n" + remove_markup(sec_text)
         # thread 
-        # if re.match(":", section_txt):
-        
+        thread = dict_tree.thread_tree(section_txt)
+        if thread:
+            thread.update({"thread_title": sec_title})
+            #pprint.pprint(thread)
+            threads.append(thread)
 
-    return list
+    return threads
     
 def parse_wikipedia_dump(xml_file):
     context = etree.iterparse(xml_file, events=("start", "end"))
     text = ""
     cur_dict = {}
-
+    ix = 0
     print("started the parser")
 
     for event, element in context:
@@ -74,11 +89,14 @@ def parse_wikipedia_dump(xml_file):
                     cur_dict["text"] = text
                     # assert type(text) == list
                     # create comment thread hierarchy and write to dict
-                    # TODO
+                    cur_dict["threads"] = parse_page(cur_dict)
 
                     # write current dict as json to jsonl output file
-                    write_to_jsonl(cur_dict, out_json)
-                    sys.exit()
+                    # TODO: Use wikipedia page id? if there is any
+                    cur_dict.update({"id":ix})
+                    if cur_dict["threads"]:
+                        write_to_jsonl(cur_dict, out_json)
+                    ix +=1
                 # Clean the current dict with current parser elements
                 cur_dict = {}
                 # Free memory by clearing the element
