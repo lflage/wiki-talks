@@ -1,7 +1,9 @@
-./obsolete/*
-./dataset/*
+obsolete/
+dataset/
 ./**.jsonl
+**/__pycache__
 
+# To define folder structure
 !./dataset/.gitkeep
 !./dataset/bz2/.gitkeep
 
