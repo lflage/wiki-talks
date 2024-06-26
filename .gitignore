@@ -1,9 +1,10 @@
 obsolete/
-dataset/
-./**.jsonl
+**/*.bz2
+**/*.jsonl
+**/*.xml
 **/__pycache__
 
 # To define folder structure
 !./dataset/.gitkeep
-!./dataset/bz2/.gitkeep
-
+!./dataset/raw/.gitkeep
+!./dataset/jsonl/.gitkeep
