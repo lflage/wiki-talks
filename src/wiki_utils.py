@@ -31,7 +31,7 @@ class WikiDumpDownloader:
         return url
 
 
-    def wiki_dump_downloader(self):
+    def download(self):
         # Check if languages were selected, else download wiki for all languages
         if self.langs:
             to_download = {k:v for (k, v) in self.iso_639_dict.items() if 
