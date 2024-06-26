@@ -4,7 +4,7 @@ import os
 class WikiDumpDownloader:
     def __init__(self,  langs=[],
                         dump_date='20240601', 
-                        out_folder='../dataset/',
+                        out_folder='../dataset/raw/',
                         iso_code_path='../utils/ISO-639-2_utf-8.txt'):
 
         self.dump_date = dump_date
