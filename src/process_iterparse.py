@@ -103,6 +103,7 @@ def parse_wikipedia_dump(xml_file):
                 element.clear()                  
 
 # Replace 'your_wiki_dump.xml' with the path to your Wikipedia XML dump file
-with bz2.BZ2File(bz2_file,'rb') as f:
-    parse_wikipedia_dump(f)
+if __name__ == "__main__":
+    with bz2.BZ2File(bz2_file,'rb') as f:
+        parse_wikipedia_dump(f)
 
