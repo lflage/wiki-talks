@@ -10,9 +10,9 @@ parser.add_argument('-o','--output', type=str, default='../dataset/jsonl/',
         help='path to output' )
 parser.add_argument('-i','--raw_path', type=str, default='../dataset/raw/',
         help='path to folder containing .bzw files')
-parser.add_argument('-d', '--dumpdate', type=str, default='20240601',
+parser.add_argument('-d', '--dump_date', type=str, default='20240601',
         help='dumpdate')
-parser.add_argument('-l', '--lang', nargs='*' ,type=str,
+parser.add_argument('-l', '--langs', nargs='*' ,type=str,
         help='list of languages to download')
 
 args = parser.parse_args()
