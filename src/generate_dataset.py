@@ -1,6 +1,9 @@
-import os, argparse,bz2
-from process_iterparse import parse_wikipedia_dump
+import os
+import argparse
+import multiprocessing
+from process_iterparse import WikiTalkThreadParser
 from wiki_utils import WikiDumpDownloader
+from tqdm import tqdm
 
 parser = argparse.ArgumentParser(description=
         """Generates wiki-talks dataset
@@ -25,21 +28,34 @@ if not args.langs:
 else:
     langs = args.langs
 
+def multi(path):
+    parser = WikiTalkThreadParser(out_folder=jsonl_file_paths,)
+    parser.parse_wikipedia_dump(path)
+
 # Download wiki dump files from wikiserver
 downloader = WikiDumpDownloader(langs=langs,
                                 dump_date=dump_date,
                                 out_folder=bz2_file_paths)
 downloader.download()
 
+print("finished donwloading")
+# process files for generating jsonl/parser dataset
+f_paths = []
+for root, dirnames, files in os.walk(bz2_file_paths):
+    for file in files:
+        f_path = os.path.join(root,file)
+        if ".bz2" in f_path:
+            f_paths.append(f_path)
 
-# # process files for generating jsonl/parser dataset
-# f_paths = []
-# for root, dirnames, files in os.walk():
-#     for file in files:
-#         if ".bz2" in file:
-#             f_paths.append(os.path.join(root,file))
-# 
-# # parse each dump
-# for path in f_paths:
-#     with bz2.BZ2File(path, 'rb') as f:
-#         parse_wikipedia_dump(f)
+# Initialize a Pool with the number of available processors
+num_items_to_process=len(f_paths)
+pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
+
+print(f"Using {multiprocessing.cpu_count()} cores/processes in parallel")
+     # Use Pool's map function to process the items in parallel
+
+
+with tqdm(total=num_items_to_process, desc="Processing files", dynamic_ncols=True) as pbar:
+    for _ in pool.imap_unordered(multi, f_paths[:num_items_to_process]):
+        pbar.update()
+print("started parsing")
