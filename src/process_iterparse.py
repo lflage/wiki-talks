@@ -29,7 +29,7 @@ class WikiTalkThreadParser():
         self._out_folder = path
 
     def make_out_path(self, in_file):
-        file_name = os.path.basename(in_file._fp.name)
+        file_name = os.path.basename(in_file)
         file_name = os.path.splitext(os.path.splitext(file_name)[0])[0]
 
         self.out_path = os.path.join(
@@ -68,59 +68,63 @@ class WikiTalkThreadParser():
     
         return threads
         
-    def parse_wikipedia_dump(self, in_file:bz2.BZ2File):
-        context = etree.iterparse(in_file, events=("start", "end"))
-        text = ""
-        cur_dict = {}
-        ix = 0
-        print("started the parser")
-        # Create output path
-        out_path = self.make_out_path(in_file)
-        if not os.path.exists(out_path):
-            with open(out_path, 'w'):
-                 pass
+    def parse_wikipedia_dump(self, file_path:str):
 
-        for event, element in context:
-            current_tag = element.tag.split("}")[1]
+        with bz2.BZ2File(file_path,'rb') as in_file:
+            context = etree.iterparse(in_file, events=("start", "end"))
+            text = ""
+            cur_dict = {}
+            ix = 0
+            print("started the parser")
+            # Create output path
+            out_path = self.make_out_path(in_file._fp.name)
+            if not os.path.exists(out_path):
+                with open(out_path, 'w'):
+                     pass
+            try:
+                for event, element in context:
+                    current_tag = element.tag.split("}")[1]
     
-            if event == "start":
-                if current_tag == "ns":
-                    try:
-                        cur_dict["ns_value"] = int(element.text)
-                    except TypeError:
-                        cur_dict["ns_value"] = None
+                    if event == "start":
+                        if current_tag == "ns":
+                            try:
+                                cur_dict["ns_value"] = int(element.text)
+                            except TypeError:
+                                cur_dict["ns_value"] = None
     
-                elif current_tag == "title":
-                    cur_dict["title"] = ""
-                elif current_tag == "text":
-                    text = ""
-            elif event == "end":
-                if current_tag == "title":
-                    cur_dict["title"] = element.text
-                elif current_tag == "text":
-                    text = element.text
-                elif current_tag == "page":
-                    if cur_dict["ns_value"] is not None and cur_dict["ns_value"] in self._ns_set:
-                        # Process text/ clean the data
-                        cur_dict["text"] = text
-                        # assert type(text) == list
-                        # create comment thread hierarchy and write to dict
-                        cur_dict["threads"] = self.parse_page(cur_dict)
-                        # write current dict as json to jsonl output file
-                        # TODO: Use wikipedia page id? if there is any
-                        cur_dict.update({"id":ix})
+                        elif current_tag == "title":
+                            cur_dict["title"] = ""
+                        elif current_tag == "text":
+                            text = ""
+                    elif event == "end":
+                        if current_tag == "title":
+                            cur_dict["title"] = element.text
+                        elif current_tag == "text":
+                            text = element.text
+                        elif current_tag == "page":
+                            if cur_dict["ns_value"] is not None and cur_dict["ns_value"] in self._ns_set:
+                                # Process text/ clean the data
+                                cur_dict["text"] = text
+                                # assert type(text) == list
+                                # create comment thread hierarchy and write to dict
+                                cur_dict["threads"] = self.parse_page(cur_dict)
+                                # write current dict as json to jsonl output file
+                                # TODO: Use wikipedia page id? if there is any
+                                cur_dict.update({"id":ix})
 
-                        del cur_dict["text"]
-                        # if threads answered write dict
-                        if cur_dict["threads"]:
-                            with open(out_path, 'a') as f_out:
-                                json.dump(cur_dict, f_out)
-                                f_out.write('\n')
-                        ix +=1
-                    # Clean the current dict with current parser elements
-                    cur_dict = {}
-                    # Free memory by clearing the element
-                    element.clear()                  
+                                del cur_dict["text"]
+                                # if threads answered write dict
+                                if cur_dict["threads"]:
+                                    with open(out_path, 'a') as f_out:
+                                        json.dump(cur_dict, f_out)
+                                        f_out.write('\n')
+                                ix +=1
+                            # Clean the current dict with current parser elements
+                            cur_dict = {}
+                            # Free memory by clearing the element
+                            element.clear()                  
+            except OSError:
+                print(file_path)
 
 # Replace 'your_wiki_dump.xml' with the path to your Wikipedia XML dump file
 if __name__ == "__main__":
