@@ -12,9 +12,9 @@ parser = argparse.ArgumentParser(description=
 parser.add_argument('-o','--output', type=str, default='../dataset/jsonl/',
         help='path to output' )
 parser.add_argument('-i','--raw_path', type=str, default='../dataset/raw/',
-        help='path to folder containing .bzw files')
+        help='path to folder containing .bz2 files')
 parser.add_argument('-d', '--dump_date', type=str, default='20240601',
-        help='dumpdate')
+        help='dumpdate in the format YYYYMMDD')
 parser.add_argument('-l', '--langs', nargs='*' ,type=str,
         help='list of languages to download')
 
