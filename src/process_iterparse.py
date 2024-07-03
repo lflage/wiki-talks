@@ -128,6 +128,8 @@ class WikiTalkThreadParser():
                             element.clear()                  
             except OSError:
                 print(file_path)
+            except EOFError:
+                print(file_path)
 
 # Replace 'your_wiki_dump.xml' with the path to your Wikipedia XML dump file
 if __name__ == "__main__":
