@@ -81,6 +81,9 @@ class WikiTalkThreadParser():
             if not os.path.exists(out_path):
                 with open(out_path, 'w'):
                      pass
+            else:
+                print("already exists: {}".format(out_path))
+                return 
             try:
                 for event, element in context:
                     current_tag = element.tag.split("}")[1]
