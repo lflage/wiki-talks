@@ -116,6 +116,8 @@ class WikiDumpDownloader:
             url = self.url_builder(lang_code)
             # request download
             response = requests.get(url,stream=True)
+            if not response.ok:
+                continue
             # create output path
             out_path = self.out_folder + url.split("/")[-1]
             # If file exists skip
