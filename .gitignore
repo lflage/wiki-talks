@@ -2,10 +2,12 @@ obsolete/
 **/*.bz2
 **/*.jsonl
 **/*.xml
+**/*.txt
 **/__pycache__
 
 # To define folder structure
 !./dataset/.gitkeep
 !./dataset/raw/.gitkeep
 !./dataset/jsonl/.gitkeep
+!./utils/checksums/.gitkeep
 src/print_jsonl.py
