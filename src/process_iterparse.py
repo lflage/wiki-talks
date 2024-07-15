@@ -3,16 +3,27 @@ import sys
 import os
 import json
 import traceback
+import logging
 import wikitextparser as wtp
 from wikitextparser import remove_markup
 from lxml import etree
 import dict_tree
+
+# Configure logger
+logging.basicConfig(filename="../logs/ThreadsParser.log",
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    filemode='w')
+
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
 
 class WikiTalkThreadParser():
     def __init__(self, 
                 out_folder="../dataset/jsonl/"):
         self._out_folder = out_folder
         self._ns_set = {1, 3, 5, 7, 9, 11, 13, 15, 101, 119,711, 829}
+        # Debug flag returns the dict with the original text
+        self.DEBUG = False
 
     # getter setter methods
     def get_ns(self):
@@ -115,31 +126,32 @@ class WikiTalkThreadParser():
                                 # TODO: Use wikipedia page id? if there is any
                                 cur_dict.update({"id":ix})
 
-                                del cur_dict["text"]
-                                # if threads answered write dict
-                                if cur_dict["threads"]:
+                                if self.DEBUG:
                                     with open(out_path, 'a') as f_out:
                                         json.dump(cur_dict, f_out)
                                         f_out.write('\n')
+                                else:
+                                    del cur_dict["text"]
+                                    # if threads answered write dict
+                                    if cur_dict["threads"]:
+                                        with open(out_path, 'a') as f_out:
+                                            json.dump(cur_dict, f_out)
+                                            f_out.write('\n')
                                 ix +=1
                             # Clean the current dict with current parser elements
                             cur_dict = {}
                             # Free memory by clearing the element
                             element.clear()                  
-            except OSError:
-                print(file_path)
-            except EOFError:
-                print(file_path)
+            except Exception as e:
+                logger.exception(e)
+                logger.exception("Exception above was cause by file{}".format(file_path))
 
 # Replace 'your_wiki_dump.xml' with the path to your Wikipedia XML dump file
 if __name__ == "__main__":
     # Debugging
-    import bz2 
     bz2_file = "../dataset/dev/simplewiki-20240420-pages-meta-current.xml.bz2"
-
-    with bz2.BZ2File(bz2_file,'rb') as f:
-        print(type(f))
-        print(f._fp.name)
-        parser = WikiTalkThreadParser()
-        parser.parse_wikipedia_dump(f)
+    parser = WikiTalkThreadParser()
+    parser.DEBUG = True
+    parser.set_out_folder('../dataset/')
+    parser.parse_wikipedia_dump(bz2_file)
 

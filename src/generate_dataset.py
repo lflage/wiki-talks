@@ -1,6 +1,7 @@
 import os
 import argparse
 import multiprocessing
+import logging
 from process_iterparse import WikiTalkThreadParser
 from wiki_utils import WikiDumpDownloader
 from tqdm import tqdm
@@ -27,10 +28,19 @@ if not args.langs:
     langs = []
 else:
     langs = args.langs
+# Configure gen_dataset_logger
+logging.basicConfig(filename="../logs/generate_dataset.log",
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    filemode='w')
+
+gen_dataset_logger = logging.getLogger()
+gen_dataset_logger.setLevel(logging.DEBUG)
 
 def multi(path):
+    gen_dataset_logger.info("Started parsing: {}".format(path))
     parser = WikiTalkThreadParser(out_folder=jsonl_file_paths,)
     parser.parse_wikipedia_dump(path)
+    gen_dataset_logger.info("Succesfully parsed: {}".format(path))
 
 # Download wiki dump files from wikiserver
 downloader = WikiDumpDownloader(langs=langs,
