@@ -52,8 +52,7 @@ class WikiTalkThreadParser():
         try:
             page = wtp.parse(page_dict["text"])
         except TypeError:
-            # TODO: Properly handle errors, create logs
-            print(traceback.format_exc())
+            parse_logger(traceback.format_exc())
             sys.exit()
         threads = []
     
@@ -124,7 +123,7 @@ class WikiTalkThreadParser():
                                 # write current dict as json to jsonl output file
                                 # TODO: Use wikipedia page id? if there is any
                                 cur_dict.update({"id":ix})
-                                cur_dict["url"] = base_url.split("/")[0] + "/" + cur_dict["title"]
+                                cur_dict["url"] = os.path.join(os.path.split(base_url)[0],cur_dict["title"])
                                 if self.DEBUG:
                                     with open(out_path, 'a') as f_out:
                                         json.dump(cur_dict, f_out)
