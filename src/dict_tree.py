@@ -1,7 +1,4 @@
 import re
-import pickle
-import pprint
-import sys,traceback
 
 date_signature = "\d{1,2}:\d{2}, \d{1,2} (January|February|March|April|May|June|July|August|September|October|November|December) \d{4} \(UTC\)"
 
@@ -64,4 +61,3 @@ def thread_tree(text):
 
 if __name__=="__main__":
     print("main")
-    pprint.pprint(thread_tree(test_2))
