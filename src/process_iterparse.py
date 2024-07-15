@@ -3,19 +3,14 @@ import sys
 import os
 import json
 import traceback
-import logging
 import wikitextparser as wtp
 from wikitextparser import remove_markup
 from lxml import etree
 import dict_tree
+from log_utils import setup_logger
 
-# Configure logger
-logging.basicConfig(filename="../logs/ThreadsParser.log",
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    filemode='w')
-
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+# Configure parse_logger
+parse_logger = setup_logger("ThreadParser", "../logs/ThreadParser.log")
 
 class WikiTalkThreadParser():
     def __init__(self, 
@@ -110,11 +105,15 @@ class WikiTalkThreadParser():
                             cur_dict["title"] = ""
                         elif current_tag == "text":
                             text = ""
+                        elif current_tag == "base":
+                            base_url = ""
                     elif event == "end":
                         if current_tag == "title":
                             cur_dict["title"] = element.text
                         elif current_tag == "text":
                             text = element.text
+                        elif current_tag == "base":
+                            base_url = element.text
                         elif current_tag == "page":
                             if cur_dict["ns_value"] is not None and cur_dict["ns_value"] in self._ns_set:
                                 # Process text/ clean the data
@@ -125,7 +124,7 @@ class WikiTalkThreadParser():
                                 # write current dict as json to jsonl output file
                                 # TODO: Use wikipedia page id? if there is any
                                 cur_dict.update({"id":ix})
-
+                                cur_dict["url"] = base_url.split("/")[0] + "/" + cur_dict["title"]
                                 if self.DEBUG:
                                     with open(out_path, 'a') as f_out:
                                         json.dump(cur_dict, f_out)
@@ -143,8 +142,8 @@ class WikiTalkThreadParser():
                             # Free memory by clearing the element
                             element.clear()                  
             except Exception as e:
-                logger.exception(e)
-                logger.exception("Exception above was cause by file{}".format(file_path))
+                parse_logger.exception(e)
+                parse_logger.exception("Exception above was cause by file{}".format(file_path))
 
 # Replace 'your_wiki_dump.xml' with the path to your Wikipedia XML dump file
 if __name__ == "__main__":

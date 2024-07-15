@@ -1,10 +1,10 @@
 import os
 import argparse
 import multiprocessing
-import logging
 from process_iterparse import WikiTalkThreadParser
 from wiki_utils import WikiDumpDownloader
 from tqdm import tqdm
+from log_utils import setup_logger
 
 parser = argparse.ArgumentParser(description=
         """Generates wiki-talks dataset
@@ -29,12 +29,7 @@ if not args.langs:
 else:
     langs = args.langs
 # Configure gen_dataset_logger
-logging.basicConfig(filename="../logs/generate_dataset.log",
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    filemode='w')
-
-gen_dataset_logger = logging.getLogger()
-gen_dataset_logger.setLevel(logging.DEBUG)
+gen_dataset_logger = setup_logger("generate_dataset", "../logs/generate_dataset.log")
 
 def multi(path):
     gen_dataset_logger.info("Started parsing: {}".format(path))
