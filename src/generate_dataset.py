@@ -1,8 +1,8 @@
 import os
 import argparse
 import multiprocessing
-from process_iterparse import WikiTalkThreadParser
-from wiki_utils import WikiDumpDownloader
+from wikitalkthreadparser import WikiTalkThreadParser
+from wikidumpdownloader import WikiDumpDownloader
 from tqdm import tqdm
 from log_utils import setup_logger
 
