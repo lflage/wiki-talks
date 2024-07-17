@@ -45,7 +45,7 @@ def thread_tree(text):
         except AttributeError as e:
             # TODO: add a log statement to capture which file generated the error
             # Returns empty dict if can't parse a correct structure
-            dict_tree_logger(e)
+            dict_tree_logger.debug(e)
             return {}
 
         reply = {"text": text,
