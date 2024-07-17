@@ -1,4 +1,7 @@
 import re
+from log_utils import setup_logger
+
+dict_tree_logger = setup_logger("dict_tree_logger", "../logs/dict_tree_logger.log")
 
 date_signature = "\d{1,2}:\d{2}, \d{1,2} (January|February|March|April|May|June|July|August|September|October|November|December) \d{4} \(UTC\)"
 
@@ -40,6 +43,7 @@ def thread_tree(text):
         except AttributeError as e:
             # TODO: add a log statement to capture which file generated the error
             # Returns empty dict if can't parse a correct structure
+            dict_tree_logger(e)
             return {}
 
         reply = {"text": text,
