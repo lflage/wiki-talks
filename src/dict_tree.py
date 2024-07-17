@@ -39,7 +39,9 @@ def thread_tree(text):
         split = split.strip()
         depth = check_depth(split)
         try:
-            text = re.search(date_signature, split).string[:search.end()][depth-1:]
+            search_result = re.search(date_signature, split)
+            text = search_result.string[:search_result.end()][depth-1:]
+
         except AttributeError as e:
             # TODO: add a log statement to capture which file generated the error
             # Returns empty dict if can't parse a correct structure
