@@ -65,5 +65,64 @@ def thread_tree(text):
         stack.append(reply)
     return thread
 
+
+def thread_no_title(text):
+    comment_indent = r"\n:"
+    text = re.sub("\n+", "\n", text)
+    text = text.strip()
+
+#    print(text)
+#    input()
+    thread = {'message': "", 'replies': []}
+
+    first_comment = re.search(r"\n:",text)
+    if not first_comment:
+        thread["message"] = text
+        return thread
+    
+    thread_text = text[:first_comment.start()]
+    thread_comments = text[first_comment.end():]
+
+ #   print(thread_text)
+#    x = input("thread first message")
+    
+    thread["message"] = thread_text
+    stack = [thread]
+
+#    comment_indent_split = re.split(comment_indent,thread_comments)
+    for split in re.split(comment_indent ,thread_comments):
+#        print(split)
+#        input("split")
+        split = split.strip()
+        depth = check_depth(split)
+
+        search_result = re.match(r":", split)
+        if search_result:
+            #if it has indentation 
+            text = search_result.string[search_result.start():]
+        else:
+            text = split
+#        print(text)
+#        input("text above")
+        reply = {"text": text,
+                "replies":[]}
+
+        if depth  > len(stack):
+            stack[-1]["replies"].append(reply)
+
+        elif depth == len(stack):
+            stack[-1]["replies"].append(reply)
+
+        elif depth < len(stack):
+            dif = len(stack) - depth
+            stack = stack[:-dif]
+            stack[-1]["replies"].append(reply)
+
+        stack.append(reply)
+
+    return thread
+
+       
+
 if __name__=="__main__":
     print("main")

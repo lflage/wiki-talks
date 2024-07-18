@@ -8,6 +8,7 @@ from wikitextparser import remove_markup
 from lxml import etree
 import dict_tree
 from log_utils import setup_logger
+from pageparser import PageParser
 
 # Configure parse_logger
 parse_logger = setup_logger("ThreadParser", "../logs/ThreadParser.log")
@@ -48,29 +49,15 @@ class WikiTalkThreadParser():
         # if there is no text on the page, return empty list
         if page_dict["text"] is None:
             return []
+        threads = []
         # Parse page with wikitextparser to return sections
+        parser = PageParser(page_dict["text"])   
         try:
-            page = wtp.parse(page_dict["text"])
+            threads = parser.full_parse()
         except TypeError:
             parse_logger(traceback.format_exc())
             sys.exit()
-        threads = []
-    
-        for i, section in enumerate(page.sections):
-            section_txt = ""
-            sec_title = section.title
-            if sec_title is None and i == 0:
-                sec_title = page_dict['title']
-    
-            sec_text = section.contents
-            section_txt += remove_markup(sec_title)
-            section_txt += "\n" + remove_markup(sec_text)
-            # thread 
-            thread = dict_tree.thread_tree(section_txt)
-            if thread:
-                thread.update({"thread_title": sec_title})
-                threads.append(thread)
-    
+
         return threads
         
     def parse_wikipedia_dump(self, file_path:str):
@@ -149,7 +136,7 @@ if __name__ == "__main__":
     # Debugging
     bz2_file = "../dataset/dev/simplewiki-20240420-pages-meta-current.xml.bz2"
     parser = WikiTalkThreadParser()
-    parser.DEBUG = True
+#    parser.DEBUG = True
     parser.set_out_folder('../dataset/')
     parser.parse_wikipedia_dump(bz2_file)
 
