@@ -3,7 +3,7 @@ from log_utils import setup_logger
 
 dict_tree_logger = setup_logger("dict_tree_logger", "../logs/dict_tree_logger.log")
 
-date_signature = "\d{1,2}:\d{2}, \d{1,2} (January|February|March|April|May|June|July|August|September|October|November|December) \d{4} \(UTC\)"
+date_signature = "\d{1,2}:\d{2}, \d{1,2} (January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \(UTC\)"
 
 def check_depth(text, base=1):
     # considers that every string has to start with a :
