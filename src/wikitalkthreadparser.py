@@ -3,10 +3,7 @@ import sys
 import os
 import json
 import traceback
-import wikitextparser as wtp
-from wikitextparser import remove_markup
 from lxml import etree
-import dict_tree
 from log_utils import setup_logger
 from pageparser import PageParser
 
