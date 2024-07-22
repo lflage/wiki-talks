@@ -1,18 +1,18 @@
 import os
 import argparse
 import multiprocessing
-from wikitalkthreadparser import WikiTalkThreadParser
-from wikidumpdownloader import WikiDumpDownloader
 from tqdm import tqdm
-from log_utils import setup_logger
+from .src.wikitalkthreadparser import WikiTalkThreadParser
+from .src.wikidumpdownloader import WikiDumpDownloader
+from .src.log_utils import setup_logger
 
 parser = argparse.ArgumentParser(description=
         """Generates wiki-talks dataset
         """)
 
-parser.add_argument('-o','--output', type=str, default='../dataset/jsonl/',
+parser.add_argument('-o','--output', type=str, default='./dataset/jsonl/',
         help='path to output' )
-parser.add_argument('-i','--raw_path', type=str, default='../dataset/raw/',
+parser.add_argument('-i','--raw_path', type=str, default='./dataset/raw/',
         help='path to folder containing .bz2 files')
 parser.add_argument('-d', '--dump_date', type=str, default='20240601',
         help='dumpdate in the format YYYYMMDD')
@@ -29,7 +29,7 @@ if not args.langs:
 else:
     langs = args.langs
 # Configure gen_dataset_logger
-gen_dataset_logger = setup_logger("generate_dataset", "../logs/generate_dataset.log")
+gen_dataset_logger = setup_logger("generate_dataset", "./logs/generate_dataset.log")
 
 def multi(path):
     gen_dataset_logger.info("Started parsing: {}".format(path))
