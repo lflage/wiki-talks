@@ -3,6 +3,7 @@ import sys
 import os
 import json
 import traceback
+import debbuger
 from lxml import etree
 from log_utils import setup_logger
 from pageparser import PageParser
@@ -109,9 +110,7 @@ class WikiTalkThreadParser():
                                 cur_dict.update({"id":ix})
                                 cur_dict["url"] = os.path.join(os.path.split(base_url)[0],cur_dict["title"])
                                 if self.DEBUG:
-                                    with open(out_path, 'a') as f_out:
-                                        json.dump(cur_dict, f_out)
-                                        f_out.write('\n')
+                                   debbuger.thread_parse_debug(cur_dict)
                                 else:
                                     del cur_dict["text"]
                                     # if threads answered write dict
@@ -133,7 +132,7 @@ if __name__ == "__main__":
     # Debugging
     bz2_file = "../dataset/dev/simplewiki-20240420-pages-meta-current.xml.bz2"
     parser = WikiTalkThreadParser()
-#    parser.DEBUG = True
+    # parser.DEBUG = True
     parser.set_out_folder('../dataset/')
     parser.parse_wikipedia_dump(bz2_file)
 
