@@ -4,7 +4,7 @@ import wikitextparser as wtp
 from pprint import pprint
 
 header = r"(={2,6})(.*?)(\1)"
-ruler = r"\n-+"
+ruler = r"\n-{4,}"
 
 class PageParser():
     def __init__(self, to_parse):
@@ -35,7 +35,7 @@ class PageParser():
                             threads_list.append(cur_thread)
                         threads_list.extend(self.wtp_parse(match.string[match.start():]))
                     else:
-                        threads_list.append(dict_tree.thread_no_title(self.to_parse))
+                        threads_list.append(self.wtp_parse(self.to_parse))
 
             else:
                 intermediate_list = self.wtp_parse(self.to_parse)
@@ -66,17 +66,12 @@ class PageParser():
 
 if __name__=="__main__":
     import json
-    with open("../tests/angela.jsonl",'r') as f:
-        content = json.loads(f.readline())
-        
-        match = re.search(header, content['text'])
-        before_header = match.string[:match.start()]
-
- #       for split in re.split()
-
-        parser = PageParser(content['text'])
-        
-        
-    threads = parser.full_parse()
-    pprint(threads)
+    with open("../tests/debug.jsonl",'r') as f:
+        for line in f.readlines():
+            content = json.loads(line)
+            
+            parser = PageParser(content['text'])
+            threads = parser.full_parse()
+            pprint(threads)
+            x = input()
         
