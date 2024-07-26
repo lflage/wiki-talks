@@ -7,9 +7,10 @@ header = r"(={2,6})(.*?)(\1)"
 ruler = r"\n-{4,}"
 
 class PageParser():
-    def __init__(self, to_parse):
+    def __init__(self, to_parse, lang):
         self.attempts = 0
         self.to_parse = to_parse
+        self.lang = lang
         
 
     def full_parse(self):
@@ -56,7 +57,7 @@ class PageParser():
             # section_txt += wtp.remove_markup(sec_title)
             section_txt += "\n" + wtp.remove_markup(sec_text)
             # thread 
-            thread = dict_tree.thread_tree(section_txt)
+            thread = dict_tree.thread_tree(section_txt, self.lang)
             if thread:
                 thread.update({"thread_title": sec_title})
                 threads_list.append(thread)

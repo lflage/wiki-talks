@@ -49,7 +49,7 @@ class WikiTalkThreadParser():
             return []
         threads = []
         # Parse page with wikitextparser to return sections
-        parser = PageParser(page_dict["text"])   
+        parser = PageParser(page_dict["text"], self.lang)   
         try:
             threads = parser.full_parse()
         except TypeError:
@@ -79,6 +79,8 @@ class WikiTalkThreadParser():
                     current_tag = element.tag.split("}")[1]
     
                     if event == "start":
+                        if current_tag == "mediawiki":
+                            self.lang = element.get("{http://www.w3.org/XML/1998/namespace}lang")
                         if current_tag == "ns":
                             try:
                                 cur_dict["ns_value"] = int(element.text)

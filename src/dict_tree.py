@@ -1,9 +1,10 @@
 import re
+import json
 from log_utils import setup_logger
 
 dict_tree_logger = setup_logger("dict_tree_logger", "../logs/dict_tree_logger.log")
 
-date_signature = "\d{1,2}:\d{2}, \d{1,2} (January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \(UTC\)"
+date_sign_dict = json.load(open("../utils/date_signatures.json"))
 
 def check_depth(text, base=1):
     # considers that every string has to start with a :
@@ -15,8 +16,11 @@ def check_depth(text, base=1):
     else:
         return base
 
-def thread_tree(text):
+def thread_tree(text, lang):
     
+    pattern = date_sign_dict[lang]
+    date_signature = re.compile(pattern)
+
     text = re.sub("\n+", "\n", text)
     text = text.strip()
 

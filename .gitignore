@@ -12,3 +12,4 @@ obsolete/
 !./dataset/jsonl/.gitkeep
 !./utils/checksums/.gitkeep
 src/print_jsonl.py
+src/test1_dict_tree.py
