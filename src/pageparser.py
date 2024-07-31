@@ -1,16 +1,26 @@
 import dict_tree
 import re
+import json
 import wikitextparser as wtp
 from pprint import pprint
 
 header = r"(={2,6})(.*?)(\1)"
 ruler = r"\n-{4,}"
 
+date_sign_dict = json.load(open("../utils/date_signatures.json"))
+
 class PageParser():
     def __init__(self, to_parse, lang):
         self.attempts = 0
         self.to_parse = to_parse
         self.lang = lang
+
+        # If there is a date signature regex, use the date signature to mark end of comment
+        # else use the colon marking the next comment to mark end of initial comment
+        if self.lang in date_sign_dict.keys():
+            self.main_parse_function = dict_tree.thread_tree
+        else:
+            self.main_parse_function = dict_tree.thread_no_title
         
 
     def full_parse(self):
@@ -32,7 +42,7 @@ class PageParser():
                         for thread_text in re.split(ruler, trailing_text):
                             # print(thread_text)
                             # x = input("press to continue")
-                            cur_thread = dict_tree.thread_no_title(thread_text)
+                            cur_thread = dict_tree.thread_no_title(thread_text,self.lang)
                             threads_list.append(cur_thread)
                         threads_list.extend(self.wtp_parse(match.string[match.start():]))
                     else:
@@ -57,7 +67,7 @@ class PageParser():
             # section_txt += wtp.remove_markup(sec_title)
             section_txt += "\n" + wtp.remove_markup(sec_text)
             # thread 
-            thread = dict_tree.thread_tree(section_txt, self.lang)
+            thread = self.main_parse_function(section_txt, self.lang)
             if thread:
                 thread.update({"thread_title": sec_title})
                 threads_list.append(thread)

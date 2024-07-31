@@ -70,7 +70,7 @@ def thread_tree(text, lang):
     return thread
 
 
-def thread_no_title(text):
+def thread_no_title(text, lang):
     comment_indent = r"\n:"
     text = re.sub("\n+", "\n", text)
     text = text.strip()
