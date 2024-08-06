@@ -1,10 +1,10 @@
 import re
-import json
+from wikitextparser import remove_markup
 from log_utils import setup_logger
+from date_signatures import date_sign_dict 
 
 dict_tree_logger = setup_logger("dict_tree_logger", "../logs/dict_tree_logger.log")
 
-date_sign_dict = json.load(open("../utils/date_signatures.json"))
 
 def check_depth(text, base=1):
     # considers that every string has to start with a :
@@ -20,7 +20,6 @@ def thread_tree(text, lang):
     
     pattern = date_sign_dict[lang]
     date_signature = re.compile(pattern)
-
     text = re.sub("\n+", "\n", text)
     text = text.strip()
 
@@ -30,7 +29,7 @@ def thread_tree(text, lang):
         replies_text = re.search(date_signature, text).string[search.end():]
     except AttributeError:
         return None
-
+    thread_text = remove_markup(thread_text)
     thread = {"message":thread_text,
                 "replies": []}
     if not replies_text.strip():
@@ -51,6 +50,7 @@ def thread_tree(text, lang):
             # Returns empty dict if can't parse a correct structure
             dict_tree_logger.debug(e)
             return {}
+        text = remove_markup(text)
 
         reply = {"text": text,
                 "replies":[]}
@@ -89,6 +89,8 @@ def thread_no_title(text, lang):
 
  #   print(thread_text)
 #    x = input("thread first message")
+
+    thread_text = remove_markup(thread_text)
     
     thread["message"] = thread_text
     stack = [thread]
@@ -106,6 +108,8 @@ def thread_no_title(text, lang):
             text = search_result.string[search_result.start():]
         else:
             text = split
+
+        text = remove_markup(text)
 #        print(text)
 #        input("text above")
         reply = {"text": text,

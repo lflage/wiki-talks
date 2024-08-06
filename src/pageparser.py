@@ -60,9 +60,6 @@ class PageParser():
         for i, section in enumerate(page.sections):
             section_txt = ""
             sec_title = section.title
-            # if sec_title is None and i == 0:
-                # sec_title = page_dict['title']
-
             sec_text = section.contents
             # section_txt += wtp.remove_markup(sec_title)
             section_txt += "\n" + wtp.remove_markup(sec_text)
@@ -80,9 +77,12 @@ if __name__=="__main__":
     with open("../tests/debug.jsonl",'r') as f:
         for line in f.readlines():
             content = json.loads(line)
-            
-            parser = PageParser(content['text'])
+            try: 
+                parser = PageParser(content['text'],"en")
+            except KeyError:
+                continue
             threads = parser.full_parse()
             pprint(threads)
+            # pprint(content["text"])
             x = input()
         
