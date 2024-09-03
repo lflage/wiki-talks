@@ -38,14 +38,17 @@ class PageParser():
                 # like ------
                 if len(word_character_trailing_text) > 10:
                     if re.search(ruler, trailing_text):
+                        # Gets all threads before the first header
                         for thread_text in re.split(ruler, trailing_text):
-                            # print(thread_text)
-                            # x = input("press to continue")
                             cur_thread = dict_tree.thread_no_title(thread_text,self.lang)
                             threads_list.append(cur_thread)
+
+                        # Parses from the first header forward
                         threads_list.extend(self.wtp_parse(match.string[match.start():]))
+                    # TODO: This else should not parse self.to_parse, but what
+                    #  comes after the first header 
                     else:
-                        threads_list.append(self.wtp_parse(self.to_parse))
+                        threads_list.extend(self.wtp_parse(self.to_parse))
 
             else:
                 intermediate_list = self.wtp_parse(self.to_parse)
@@ -60,9 +63,9 @@ class PageParser():
             section_txt = ""
             sec_title = section.title
             sec_text = section.contents
-            # section_txt += wtp.remove_markup(sec_title)
+
             section_txt += "\n" + wtp.remove_markup(sec_text)
-            # thread 
+
             thread = self.main_parse_function(section_txt, self.lang)
             if thread:
                 thread.update({"thread_title": sec_title})
