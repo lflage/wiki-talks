@@ -1,13 +1,12 @@
 import dict_tree
 import re
-import json
 import wikitextparser as wtp
 from pprint import pprint
+from date_signatures import date_sign_dict
 
 header = r"(={2,6})(.*?)(\1)"
 ruler = r"\n-{4,}"
 
-date_sign_dict = json.load(open("../utils/date_signatures.json"))
 
 class PageParser():
     def __init__(self, to_parse, lang):
