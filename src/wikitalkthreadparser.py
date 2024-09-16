@@ -7,6 +7,7 @@ import debbuger
 from lxml import etree
 from log_utils import setup_logger
 from pageparser import PageParser
+from date_signatures import date_sign_dict
 
 # Configure parse_logger
 parse_logger = setup_logger("ThreadParser", "../logs/ThreadParser.log")
@@ -50,11 +51,14 @@ class WikiTalkThreadParser():
         threads = []
         # Parse page with wikitextparser to return sections
         parser = PageParser(page_dict["text"], self.lang)   
-        try:
-            threads = parser.full_parse()
-        except TypeError:
-            parse_logger(traceback.format_exc())
-            sys.exit()
+        if self.lang in date_sign_dict.keys():
+            threads = parser.wtp_parse(page_dict['text'])
+        else:
+            try:
+                threads = parser.full_parse()
+            except TypeError:
+                parse_logger(traceback.format_exc())
+                sys.exit()
 
         return threads
         
@@ -132,9 +136,9 @@ class WikiTalkThreadParser():
 # Replace 'your_wiki_dump.xml' with the path to your Wikipedia XML dump file
 if __name__ == "__main__":
     # Debugging
-    bz2_file = "../dataset/dev/simplewiki-20240420-pages-meta-current.xml.bz2"
+    bz2_file = "../dataset/raw/enwiki-20240601-pages-meta-current.xml.bz2"
     parser = WikiTalkThreadParser()
     # parser.DEBUG = True
-    parser.set_out_folder('../dataset/')
+    parser.set_out_folder('../dataset/v1_0_0')
     parser.parse_wikipedia_dump(bz2_file)
 
