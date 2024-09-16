@@ -4,7 +4,7 @@ obsolete/
 **/*.xml
 **/*.txt
 **/__pycache__
-**/*.log
+**/logs/*
 
 # To define folder structure
 !./dataset/.gitkeep
