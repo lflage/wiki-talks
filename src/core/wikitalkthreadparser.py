@@ -1,16 +1,17 @@
+# TODO: Module Docstring
 import bz2
 import sys
 import os
 import json
 import traceback
-import debbuger
 from lxml import etree
-from log_utils import setup_logger
-from pageparser import PageParser
-from date_signatures import date_sign_dict
+from ..utils.debbuger import thread_parse_debug
+from ..utils.log_utils import setup_logger
+from ..utils.date_signatures import date_sign_dict
+from .pageparser import PageParser
 
 # Configure parse_logger
-parse_logger = setup_logger("ThreadParser", "../logs/ThreadParser.log")
+parse_logger = setup_logger(__file__)
 
 class WikiTalkThreadParser():
     def __init__(self, 
@@ -120,7 +121,7 @@ class WikiTalkThreadParser():
                                 cur_dict.update({"id":ix})
                                 cur_dict["url"] = os.path.join(os.path.split(base_url)[0],cur_dict["title"])
                                 if self.DEBUG:
-                                   debbuger.thread_parse_debug(cur_dict)
+                                    thread_parse_debug(cur_dict)
                                 else:
                                     del cur_dict["text"]
                                     # if threads answered write dict

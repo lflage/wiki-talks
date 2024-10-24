@@ -1,4 +1,5 @@
 # File containing relevat datastructures and paths
+from ..config import ISO_CODE_PATH
 
 date_sign_dict = {
 "en" : r"\d{1,2}:\d{2}, \d{1,2} (January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \(UTC\)",
@@ -10,7 +11,7 @@ date_sign_dict = {
 }
 
 # Always read codes from file when initialiazing
-ISO_CODE_PATH = '../utils/ISO-639-2_utf-8.txt'
+
 iso_639_dict = {}
 with open(ISO_CODE_PATH, 'r', encoding='utf-8') as file:
     for line in file.readlines():

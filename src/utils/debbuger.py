@@ -1,17 +1,17 @@
+# TODO: Module Docstring
 import sys
 import json
 from pprint import pprint
 
-debug_file = "../tests/debug.jsonl"
 
-def thread_parse_debug(cur_dict):
+def thread_parse_debug(cur_dict, targe_file="../tests/debug.jsonl"):
     pprint(cur_dict)
     x = input()
     if x == "s":
-        with open(debug_file, 'a') as f_out:
+        with open(targe_file, 'a', encoding='utf8') as f_out:
             json.dump(cur_dict, f_out)
             f_out.write('\n')
     if x == "n":
-       return 
+        return
     if x == "q":
         sys.exit()

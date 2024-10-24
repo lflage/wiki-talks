@@ -2,14 +2,17 @@ obsolete/
 **/*.bz2
 **/*.jsonl
 **/*.xml
-**/*.txt
 **/__pycache__
 **/logs/*
+**/experiments
+**/*.sh
+**/checksums/*.txt
 
 # To define folder structure
-!./dataset/.gitkeep
-!./dataset/raw/.gitkeep
-!./dataset/jsonl/.gitkeep
+!./data/.gitkeep
+!./data/raw/.gitkeep
+!./data/jsonl/.gitkeep
 !./utils/checksums/.gitkeep
+!./src/utils/*.txt
 src/print_jsonl.py
 src/test1_dict_tree.py

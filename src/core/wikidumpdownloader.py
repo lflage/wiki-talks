@@ -1,16 +1,17 @@
 import requests
 import hashlib
-import os 
+import os
+from ..config import ISO_CODE_PATH, CHECKSUMS_DIR
 
 class WikiDumpDownloader:
     def __init__(self,  langs=[],
-                        dump_date='20240601', 
+                        dump_date='20240601',
                         out_folder='../dataset/raw/',
-                        iso_code_path='../utils/ISO-639-2_utf-8.txt',
-                        checksums_path='../utils/checksums/'):
+                        iso_code_path=ISO_CODE_PATH,
+                        checksums_path=CHECKSUMS_DIR):
 
         self.dump_date = dump_date
-        self.iso_code_path = iso_code_path 
+        self.iso_code_path = iso_code_path
         self.out_folder = out_folder
         self.checksums_path = checksums_path
         self.hash_download = False
@@ -110,7 +111,7 @@ class WikiDumpDownloader:
                                     self.iso_639_dict[k] in self.langs}
         else:
             to_download = self.iso_639_dict
-        
+
         for lang_code in to_download.keys():
             # create Url
             url = self.url_builder(lang_code)
@@ -131,4 +132,4 @@ class WikiDumpDownloader:
 if __name__ == "__main__":
     # Debbugging:
     downloader = WikiDumpDownloader(langs=['Portuguese','French'])
-    downloader.wiki_dump_downloader()
+    downloader.download()
