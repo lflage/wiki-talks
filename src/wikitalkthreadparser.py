@@ -38,8 +38,12 @@ class WikiTalkThreadParser():
         file_name = os.path.basename(in_file)
         file_name = os.path.splitext(os.path.splitext(file_name)[0])[0]
 
+        # language is infered from wikiname here
+        lang = file_name[:2]
+
         self.out_path = os.path.join(
             self._out_folder,
+            lang,
             file_name + ".jsonl")
         return self.out_path
     
@@ -133,12 +137,14 @@ class WikiTalkThreadParser():
                 parse_logger.exception(e)
                 parse_logger.exception("Exception above was cause by file{}".format(file_path))
 
-# Replace 'your_wiki_dump.xml' with the path to your Wikipedia XML dump file
 if __name__ == "__main__":
     # Debugging
-    bz2_file = "../dataset/raw/enwiki-20240601-pages-meta-current.xml.bz2"
+    # bz2_file = "../dataset/raw/enwiki-20240601-pages-meta-current.xml.bz2"
     parser = WikiTalkThreadParser()
+    parser.set_out_folder("./testing_folder/")
+    parser.make_out_path("../dataset/raw/enwiki-20240601-pages-meta-current.xml.bz2")
+    print(parser.out_path)
     # parser.DEBUG = True
-    parser.set_out_folder('../dataset/v1_0_0')
-    parser.parse_wikipedia_dump(bz2_file)
+    # parser.set_out_folder('../dataset/v1_0_0')
+    # parser.parse_wikipedia_dump(bz2_file)
 
