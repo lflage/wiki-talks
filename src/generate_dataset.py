@@ -2,6 +2,7 @@ import os
 import argparse
 import multiprocessing
 from tqdm import tqdm
+from date_signatures import iso_639_dict
 from wikitalkthreadparser import WikiTalkThreadParser
 from wikidumpdownloader import WikiDumpDownloader
 from log_utils import setup_logger
@@ -28,6 +29,12 @@ if not args.langs:
     langs = []
 else:
     langs = args.langs
+
+for code, lang in iso_639_dict.items():
+    cur_path = os.path.join(jsonl_file_paths,code)
+    if not os.path.exists(cur_path):
+        os.makedirs(cur_path, exist_ok=True)
+
 # Configure gen_dataset_logger
 gen_dataset_logger = setup_logger("generate_dataset", "../logs/generate_dataset.log")
 
@@ -57,7 +64,7 @@ num_items_to_process=len(f_paths)
 pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
 
 print(f"Using {multiprocessing.cpu_count()} cores/processes in parallel")
-     # Use Pool's map function to process the items in parallel
+# Use Pool's map function to process the items in parallel
 
 
 with tqdm(total=num_items_to_process, desc="Processing files", dynamic_ncols=True) as pbar:
