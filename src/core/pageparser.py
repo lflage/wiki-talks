@@ -1,8 +1,8 @@
-import dict_tree
 import re
-import wikitextparser as wtp
 from pprint import pprint
-from date_signatures import date_sign_dict
+import wikitextparser as wtp
+from .dict_tree import thread_tree, thread_no_title
+from ..utils.date_signatures import date_sign_dict
 
 header = r"(={2,6})(.*?)(\1)"
 ruler = r"\n-{4,}"
@@ -17,9 +17,9 @@ class PageParser():
         # If there is a date signature regex, use the date signature to mark end of comment
         # else use the colon marking the next comment to mark end of initial comment
         if self.lang in date_sign_dict.keys():
-            self.main_parse_function = dict_tree.thread_tree
+            self.main_parse_function = thread_tree
         else:
-            self.main_parse_function = dict_tree.thread_no_title
+            self.main_parse_function = thread_no_title
         
 
     def full_parse(self):
@@ -40,7 +40,7 @@ class PageParser():
                     if re.search(ruler, trailing_text):
                         # Gets all threads before the first header
                         for thread_text in re.split(ruler, trailing_text):
-                            cur_thread = dict_tree.thread_no_title(thread_text,self.lang)
+                            cur_thread = thread_no_title(thread_text,self.lang)
                             threads_list.append(cur_thread)
 
                         # Parses from the first header forward

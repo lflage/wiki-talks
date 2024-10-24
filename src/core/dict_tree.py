@@ -1,9 +1,11 @@
+# TODO: Module Docstrin
 import re
+import os
 from wikitextparser import remove_markup
-from log_utils import setup_logger
-from date_signatures import date_sign_dict 
+from ..utils.log_utils import setup_logger
+from ..utils.date_signatures import date_sign_dict
 
-dict_tree_logger = setup_logger("dict_tree_logger", "../logs/dict_tree_logger.log")
+dict_tree_logger = setup_logger(__file__)
 
 
 def check_depth(text, base=1):

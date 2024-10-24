@@ -2,18 +2,19 @@ import os
 import argparse
 import multiprocessing
 from tqdm import tqdm
-from date_signatures import iso_639_dict
-from wikitalkthreadparser import WikiTalkThreadParser
-from wikidumpdownloader import WikiDumpDownloader
-from log_utils import setup_logger
+from src.config import DATA_DIR
+from src.utils.date_signatures import iso_639_dict
+from src.core.wikitalkthreadparser import WikiTalkThreadParser
+from src.core.wikidumpdownloader import WikiDumpDownloader
+from src.utils.log_utils import setup_logger
 
 parser = argparse.ArgumentParser(description=
         """Generates wiki-talks dataset
         """)
 
-parser.add_argument('-o','--output', type=str, default='../dataset/jsonl/',
+parser.add_argument('-o','--output', type=str, default= DATA_DIR + '/datasets/v',
         help='path to output' )
-parser.add_argument('-i','--raw_path', type=str, default='../dataset/raw/',
+parser.add_argument('-i','--raw_path', type=str, default= DATA_DIR +'/raw/',
         help='path to folder containing .bz2 files')
 parser.add_argument('-d', '--dump_date', type=str, default='20240601',
         help='dumpdate in the format YYYYMMDD')
@@ -36,7 +37,7 @@ for code, lang in iso_639_dict.items():
         os.makedirs(cur_path, exist_ok=True)
 
 # Configure gen_dataset_logger
-gen_dataset_logger = setup_logger("generate_dataset", "../logs/generate_dataset.log")
+gen_dataset_logger = setup_logger(__file__)
 
 def multi(path):
     gen_dataset_logger.info("Started parsing: {}".format(path))
