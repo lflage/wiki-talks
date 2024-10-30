@@ -1,4 +1,20 @@
-# File containing relevat datastructures and paths
+"""
+Module containing language-specific date parsing patterns and ISO 639 language codes.
+date_sign_dict is easily acessible for public contributions
+
+This file contains:
+    - `date_sign_dict`: A dictionary containing regular expression patterns for parsing 
+      date signatures in Wikipedia talk pages for different languages. The keys are 
+      ISO 639-1 language codes, and values are regex patterns to identify date formats.
+    - `iso_639_dict`: A dictionary mapping ISO 639-1 language codes to language names, 
+      dynamically populated from a file located at `ISO_CODE_PATH`.
+
+Example:
+    Use `date_sign_dict` to retrieve the date format regex for a specific language:
+    
+        en_pattern = date_sign_dict['en']
+"""
+
 from ..config import ISO_CODE_PATH
 
 date_sign_dict = {
