@@ -22,7 +22,7 @@ class WikiDumpDownloader:
     def __init__(self,
                 langs=None,
                 dump_date='20240601',
-                out_folder='../dataset/raw/',
+                out_folder='../data/raw/',
                 iso_code_path=ISO_CODE_PATH,
                 checksums_path=CHECKSUMS_DIR):
         """
