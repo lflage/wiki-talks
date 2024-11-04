@@ -1,7 +1,7 @@
 # wiki-talks
 
 This repository contains code related to the Wiki-Talks dataset.
-Dumps can be accessed at the Wikimedia [index(https://dumps.wikimedia.org/backup-index.html)]
+Dumps can be accessed at the Wikimedia [index](https://dumps.wikimedia.org/backup-index.html)
 An example of the wikipedia dumps used are the [following](https://dumps.wikimedia.org/simplewiki/20241020/):
 
 ```
@@ -34,7 +34,7 @@ The downloader can handle multiple languages, verify the integrity of downloaded
 
 ### Standard Inputs
 
-- `langs`: `list` of language names to download, e.g., `['Portuguese', 'French']`, if not set 
+- `langs`: `list` of language names to download, e.g., `['Portuguese', 'French']`
 - `dump_date`: `str` specifying the date of the Wikipedia dump in `YYYYMMDD` format, e.g., `'20240601'`
 - `out_folder`: `str` representing the path for the output directory, e.g., `'../data/raw/'`
 - `iso_code_path`: `str` path to the ISO code file, e.g., `ISO_CODE_PATH`
