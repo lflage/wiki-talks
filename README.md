@@ -79,6 +79,3 @@ Please open a pull request if you can contribute.
 
 See LICENSE file
 
-# HuggingFace download
-
-To download and use the standard Dataset refer to the [HuggingFace](https://huggingface.co/datasets/lflage/wiki-talks) page.
