@@ -15,7 +15,7 @@ parser.add_argument('-o', '--output', type=str, default=DATA_DIR + '/datasets/v'
                     help='Path to output directory')
 parser.add_argument('-i', '--raw_path', type=str, default=DATA_DIR + '/raw/',
                     help='Path to folder containing .bz2 files')
-parser.add_argument('-d', '--dump_date', type=str, default='20240601',
+parser.add_argument('-d', '--dump_date', type=str, default='20250920',
                     help='Wikipedia dump date in the format YYYYMMDD')
 parser.add_argument('-l', '--langs', nargs='*', type=str,
                     help='List of language codes to download')
