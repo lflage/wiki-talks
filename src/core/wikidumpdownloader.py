@@ -1,10 +1,11 @@
 import os
 import hashlib
 import requests
+from ..utils.log_utils import setup_logger
 from ..config import ISO_CODE_PATH, CHECKSUMS_DIR
 from ..utils.date_signatures import iso_639_dict
 
-
+dw_logger = setup_logger(__file__)
 class WikiDumpDownloader:
     """
     Downloads Wikipedia dumps and verifies their checksums for specified languages and dates.
@@ -54,9 +55,10 @@ class WikiDumpDownloader:
             str: The URL to download the specified Wikipedia dump.
         """
         assert lang_code in self.iso_639_dict
-        url = '''
-        https://dumps.wikimedia.org/{lg_code}wiki/{date}/{lg_code}wiki-{date}-pages-meta-current.xml.bz2
-        '''.format(lg_code=lang_code, date=self.dump_date)
+        url = (
+            f"https://dumps.wikimedia.org/{lang_code}wiki/{self.dump_date}/"
+            f"{lang_code}wiki-{self.dump_date}-pages-meta-current.xml.bz2"
+        )
         return url
 
     def download_hashes(self):
@@ -165,6 +167,8 @@ class WikiDumpDownloader:
             # Request download
             response = requests.get(url, stream=True, timeout=10)
             if not response.ok:
+                dw_logger.error(f"Could not download: {url}")
+                dw_logger.error(f"response: {response}")
                 continue
 
             # Create output path
@@ -172,7 +176,6 @@ class WikiDumpDownloader:
             # Skip if file already exists
             if os.path.exists(out_path):
                 continue
-
             with open(out_path, 'wb') as out_f:
                 for chunk in response.iter_content(chunk_size=10 * 1024):
                     out_f.write(chunk)

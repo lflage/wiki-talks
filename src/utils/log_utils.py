@@ -8,8 +8,10 @@ def setup_logger(name, level=logging.INFO):
     """Returns a configured logger 
     log_file must be __file__ from which file you need to log
     """
-    file_name = os.path.split(name)[-1]
+    file_name = os.path.splitext(os.path.split(name)[-1])[0]
     file_path = os.path.join(LOGS_DIR,file_name)
+    if not os.path.exists(LOGS_DIR):
+        os.makedirs(LOGS_DIR, exist_ok=True)
     handler = logging.FileHandler(file_path)
     handler.setFormatter(formatter)
 
