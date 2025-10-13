@@ -19,6 +19,9 @@ import wikitextparser as wtp
 from .dict_tree import thread_tree, thread_no_title
 from ..utils.date_signatures import date_sign_dict
 
+USER_PATTERN = r"(?<=\[\[User[:| talk])(.*?)(?=\|)"
+USER_IPV4_PATTERN = r"(\d{1,3}\.){3}\d{1,3}"
+USER_IPV6_PATTERN = r"([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}"
 
 
 class PageParser:
@@ -29,7 +32,7 @@ class PageParser:
     HEADER = r"(={2,6})(.*?)(\1)"
     RULER = r"\n-{4,}"
 
-    def __init__(self, to_parse, lang):
+    def __init__(self, to_parse, lang, anon=True):
         """
         Initializes the parser with page content and language.
 
@@ -43,6 +46,7 @@ class PageParser:
         """
         self.to_parse = to_parse
         self.lang = lang
+        self.anon = anon
 
         # Use date signature to mark end of comment if available for the language
         if self.lang in date_sign_dict:
@@ -104,6 +108,13 @@ class PageParser:
             section_txt = ""
             sec_title = section.title
             sec_text = section.contents
+
+            if self.anon:
+                all_users = re.findall(USER_PATTERN, sec_text)
+                for user in all_users:
+                    sec_text = re.sub(re.escape(user),"ANON_USER", sec_text)
+                sec_text = re.sub(USER_IPV4_PATTERN,"ANON_IPV4", sec_text)
+                sec_text = re.sub(USER_IPV6_PATTERN,"ANON_IPV6", sec_text)
 
             section_txt += "\n" + wtp.remove_markup(sec_text)
 
