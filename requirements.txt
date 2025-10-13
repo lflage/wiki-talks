@@ -1,0 +1,4 @@
+lxml
+wikitextparser
+bz2
+requests
