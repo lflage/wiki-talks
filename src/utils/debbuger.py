@@ -46,3 +46,14 @@ def thread_parse_debug(cur_dict, target_file="../tests/debug.jsonl"):
         return
     if x == "q":
         sys.exit()
+
+def file_inspection(f_path):
+    import json
+    with open(f_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            cur_dict = json.loads(line)
+            pprint(cur_dict)
+            x = input()
+            if x == "q":
+                sys.exit()
+

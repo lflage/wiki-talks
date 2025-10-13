@@ -18,7 +18,7 @@ import sys
 import os
 import json
 from lxml import etree
-from ..utils.debbuger import thread_parse_debug
+from ..utils.debbuger import thread_parse_debug, file_inspection
 from ..utils.log_utils import setup_logger
 from ..utils.date_signatures import date_sign_dict
 from .pageparser import PageParser
@@ -131,8 +131,7 @@ class WikiTalkThreadParser:
             print("Started parsing")
             out_path = self.make_out_path(in_file._fp.name)
             if not os.path.exists(out_path):
-                with open(out_path, 'w', encoding='utf-8'):
-                    pass  # Create empty file if not exists
+                os.makedirs(os.path.dirname(out_path))
             else:
                 print(f"Output file already exists: {out_path}")
                 return
@@ -183,13 +182,35 @@ class WikiTalkThreadParser:
             except Exception as e:
                 parse_logger.exception("Parsing error in file %s: %s",file_path, e)
 
-if __name__ == "__main__":
-    # Debugging example
+def main():
+    import argparse
+    from tqdm import tqdm
+    from .wikidumpdownloader import WikiDumpDownloader
+
+    parser = argparse.ArgumentParser(description="Generate dataset from Wikipedia talk page dumps.")
+    parser.add_argument('--raw_path', type=str, default="./data/raw", help='Path to stored downloaded .bz2 files.')
+    parser.add_argument('--output', type=str, default="data/datasets", help='Path to store output JSONL files.')
+    parser.add_argument('--langs', type=str, nargs='*', help='List of language codes to process (e.g., en, de). If empty, processes all languages.')
+    parser.add_argument('--debug', action='store_true', help='Enable debug mode to inspect parsed threads interactively. Needs final output file')
+    args = parser.parse_args()
+
+    bz2_file_path = args.raw_path
+    # jsonl_file_paths = args.output
+    # langs = args.langs if args.langs else []
+
+    
     parser = WikiTalkThreadParser()
-    parser.set_out_folder("./testing_folder/")
-    parser.make_out_path("../dataset/raw/enwiki-20240601-pages-meta-current.xml.bz2")
-    print(parser.out_path)
-    # Uncomment to debug parsing
-    # parser.DEBUG = True
-    # parser.set_out_folder('../dataset/v1_0_0')
-    # parser.parse_wikipedia_dump(bz2_file)
+    parser.parse_wikipedia_dump(bz2_file_path)
+
+if __name__ == "__main__":
+    main()
+    # Debugging example
+#    bz2_file = "/home/lucasfl/Documents/repos/wiki-talks/wiki-talks/data/raw/ptwiki-20250920-pages-meta-current.xml.bz2"
+#    parser.set_out_folder("./data/test_folder")
+#    parser.make_out_path(bz2_file)
+#    print(parser.out_path)
+#    # Uncomment to debug parsing
+#    parser.debug = True
+#    if parser.debug:
+#        file_inspection(parser.out_path)
+#    parser.parse_wikipedia_dump(bz2_file)
