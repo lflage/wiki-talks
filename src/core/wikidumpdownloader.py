@@ -164,18 +164,18 @@ class WikiDumpDownloader:
         for lang_code in to_download.keys():
             # Build URL
             url = self.url_builder(lang_code)
-            # Request download
+            # Create output path
+            out_path = os.path.join(self.out_folder, url.split("/")[-1])
+            # Skip if file already exists
+            if os.path.exists(out_path):
+                continue
+           # Request download
             response = requests.get(url, stream=True, timeout=10)
             if not response.ok:
                 dw_logger.error(f"Could not download: {url}")
                 dw_logger.error(f"response: {response}")
                 continue
 
-            # Create output path
-            out_path = os.path.join(self.out_folder, url.split("/")[-1])
-            # Skip if file already exists
-            if os.path.exists(out_path):
-                continue
             with open(out_path, 'wb') as out_f:
                 for chunk in response.iter_content(chunk_size=10 * 1024):
                     out_f.write(chunk)
