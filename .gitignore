@@ -7,6 +7,7 @@ obsolete/
 **/experiments
 **/*.sh
 **/checksums/*.txt
+slurm_out/
 
 # To define folder structure
 !./data/.gitkeep
