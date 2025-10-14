@@ -19,7 +19,7 @@ import wikitextparser as wtp
 from .dict_tree import thread_tree, thread_no_title
 from ..utils.date_signatures import date_sign_dict
 
-USER_PATTERN = r"(?<=\[\[User[:| talk])(.*?)(?=\|)"
+# USER_PATTERN = r"(?<=\[\[User[:| talk])(.*?)(?=\|)"
 USER_IPV4_PATTERN = r"(\d{1,3}\.){3}\d{1,3}"
 USER_IPV6_PATTERN = r"([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}"
 
@@ -110,9 +110,9 @@ class PageParser:
             sec_text = section.contents
 
             if self.anon:
-                all_users = re.findall(USER_PATTERN, sec_text)
-                for user in all_users:
-                    sec_text = re.sub(re.escape(user),"ANON_USER", sec_text)
+                # all_users = re.findall(USER_PATTERN, sec_text)
+                # for user in all_users:
+                #     sec_text = re.sub(re.escape(user),"ANON_USER", sec_text)
                 sec_text = re.sub(USER_IPV4_PATTERN,"ANON_IPV4", sec_text)
                 sec_text = re.sub(USER_IPV6_PATTERN,"ANON_IPV6", sec_text)
 
