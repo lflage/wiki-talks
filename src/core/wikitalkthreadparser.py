@@ -131,7 +131,7 @@ class WikiTalkThreadParser:
             print("Started parsing")
             out_path = self.make_out_path(in_file._fp.name)
             if not os.path.exists(out_path):
-                os.makedirs(os.path.dirname(out_path))
+                os.makedirs(os.path.dirname(out_path), exist_ok=True)
             else:
                 print(f"Output file already exists: {out_path}")
                 return
