@@ -30,6 +30,7 @@ date_sign_dict = {
 
 iso_639_dict = {}
 with open(ISO_CODE_PATH, 'r', encoding='utf-8') as file:
+    #lg : language
     for line in file.readlines():
         codes = line.split('|')
         if codes[2]:
