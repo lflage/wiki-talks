@@ -2,6 +2,8 @@ import json, os, argparse
 from transformers import pipeline
 from tqdm import tqdm
 from src.utils.date_signatures import iso_639_dict
+from src.utils.log_utils import setup_logger
+from src.utils.data_yield import iter_messages
 
 from pprint import pprint
 
@@ -94,6 +96,9 @@ if __name__ == "__main__":
         if lg not in iso_639_dict.keys():
             raise ValueError(f"{lg} not in valid languages")
 
+    logger = setup_logger(__file__)
+
+
     for base, dirs, jsonl_list in tqdm(os.walk(args.input)):
         for jsonl_file in jsonl_list:
             if "sidecar" in jsonl_file or "checkpoint" in jsonl_file:
@@ -123,3 +128,5 @@ if __name__ == "__main__":
                     if first:
                         first = False
                         print(records)
+            logger.info(f"Finished:{jsonl_file}")
+
