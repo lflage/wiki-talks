@@ -3,7 +3,7 @@ import hashlib
 import requests
 from ..utils.log_utils import setup_logger
 from ..config import ISO_CODE_PATH, CHECKSUMS_DIR
-from ..utils.date_signatures import iso_639_dict
+from ..utils.date_signatures import wiki_code_dict
 
 dw_logger = setup_logger(__file__)
 class WikiDumpDownloader:
@@ -17,14 +17,13 @@ class WikiDumpDownloader:
         iso_code_path (str): Path to the ISO code file containing language codes.
         checksums_path (str): Path to the directory for checksum files.
         hash_download (bool): Flag indicating if hash files have been downloaded.
-        iso_639_dict (dict): Dictionary mapping language codes to language names.
+        wiki_code_dict (dict): Dictionary mapping language codes to language names.
     """
 
     def __init__(self,
                 langs=None,
                 dump_date='20240601',
                 out_folder='../data/raw/',
-                iso_code_path=ISO_CODE_PATH,
                 checksums_path=CHECKSUMS_DIR):
         """
         Initializes the WikiDumpDownloader with specified download settings.
@@ -37,11 +36,10 @@ class WikiDumpDownloader:
             checksums_path (str): Path to checksum files directory. Defaults to CHECKSUMS_DIR.
         """
         self.dump_date = dump_date
-        self.iso_code_path = iso_code_path
         self.out_folder = out_folder
         self.checksums_path = checksums_path
         self.hash_download = False
-        self.iso_639_dict = iso_639_dict
+        self.wiki_code_dict = wiki_code_dict
         self.langs = [] if langs is None else langs
 
     def url_builder(self, lang_code):
@@ -54,7 +52,7 @@ class WikiDumpDownloader:
         Returns:
             str: The URL to download the specified Wikipedia dump.
         """
-        assert lang_code in self.iso_639_dict
+        assert lang_code in self.wiki_code_dict
         url = (
             f"https://dumps.wikimedia.org/{lang_code}wiki/{self.dump_date}/"
             f"{lang_code}wiki-{self.dump_date}-pages-meta-current.xml.bz2"
@@ -67,7 +65,7 @@ class WikiDumpDownloader:
         
         If the checksum file already exists, it skips the download.
         """
-        for lang_code in self.iso_639_dict:
+        for lang_code in self.wiki_code_dict:
             url = '''
             https://dumps.wikimedia.org/{lg_code}wiki/{date}/{lg_code}wiki-{date}-md5sums.txt
             '''.format(lg_code=lang_code, date=self.dump_date)
@@ -150,16 +148,16 @@ class WikiDumpDownloader:
         """
         Downloads Wikipedia dump files for the specified languages to the output folder.
         
-        If no languages are specified, downloads for all languages in `iso_639_dict`.
+        If no languages are specified, downloads for all languages in `wiki_code_dict`.
         Skips download if the file already exists.
         """
         print("Initializing download")
 
         # Check if specific languages were provided
         if self.langs:
-            to_download = {k: v for k, v in self.iso_639_dict.items() if v in self.langs}
+            to_download = {k: v for k, v in self.wiki_code_dict.items() if v in self.langs}
         else:
-            to_download = self.iso_639_dict
+            to_download = self.wiki_code_dict
 
         for lang_code in to_download.keys():
             # Build URL

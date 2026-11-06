@@ -9,6 +9,8 @@ obsolete/
 **/checksums/*.txt
 slurm_out/
 .ipynb_checkpoints
+**/temp
+**/plots
 
 # To define folder structure
 !./data/.gitkeep

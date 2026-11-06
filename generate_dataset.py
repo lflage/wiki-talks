@@ -3,7 +3,7 @@ import argparse
 import multiprocessing
 from tqdm import tqdm
 from src.config import DATA_DIR
-from src.utils.date_signatures import iso_639_dict
+from src.utils.date_signatures import wiki_code_dict
 from src.core.wikitalkthreadparser import WikiTalkThreadParser
 from src.core.wikidumpdownloader import WikiDumpDownloader
 from src.utils.log_utils import setup_logger
@@ -15,7 +15,7 @@ parser.add_argument('-o', '--output', type=str, default=DATA_DIR + '/datasets/v'
                     help='Path to output directory')
 parser.add_argument('-i', '--raw_path', type=str, default=DATA_DIR + '/raw/',
                     help='Path to folder containing .bz2 files')
-parser.add_argument('-d', '--dump_date', type=str, default='20250920',
+parser.add_argument('-d', '--dump_date', type=str, default='20261101',
                     help='Wikipedia dump date in the format YYYYMMDD')
 parser.add_argument('-l', '--langs', nargs='*', type=str,
                     help='List of language codes to download')
@@ -29,8 +29,8 @@ dump_date = args.dump_date
 langs = args.langs if args.langs else []
 
 # Create output directories for each language
-# If langs is empty, creates for all languages in the iso_639_dict
-languages_to_process = langs if langs else iso_639_dict
+# If langs is empty, creates for all languages in the wiki_code_dict
+languages_to_process = langs if langs else wiki_code_dict
 
 for code in languages_to_process:
     cur_path = os.path.join(jsonl_file_paths, code)
@@ -65,8 +65,9 @@ f_paths = []
 for root, dirnames, files in os.walk(bz2_file_paths):
     for file in files:
         f_path = os.path.join(root, file)
-        if ".bz2" in f_path:
-            f_paths.append(f_path)
+        for code in languages_to_process:
+            if ".bz2" and f"{code}wiki" in f_path:
+                f_paths.append(f_path)
 
 # Set up multiprocessing pool with available CPU cores
 num_items_to_process = len(f_paths)

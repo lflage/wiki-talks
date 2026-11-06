@@ -35,3 +35,6 @@ with open(ISO_CODE_PATH, 'r', encoding='utf-8') as file:
         codes = line.split('|')
         if codes[2]:
             iso_639_dict[codes[2]] = codes[3]
+wiki_code_dict = {**iso_639_dict,
+                    "simple":"simple",
+                    }
